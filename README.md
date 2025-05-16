@@ -41,7 +41,7 @@ The script is generated with Gemini in a JSON format. Each "block" of script can
 
 #### Example Podcast
 Here's a podcast generated in May 2025 using the default parameters
-[mp3](https://gabalpha.github.io/read-audio/?p=https://github.com/Gortaf/Beholder/blob/main/example_podcast.mp3)
+[mp3](https://drive.google.com/file/d/1S17f52nqJMUGILWfaUJHt5SNwHSMNJdQ/view?usp=sharing)
 
 python Beholder --help:
 ```
