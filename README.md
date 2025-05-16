@@ -39,6 +39,10 @@ Paper searching is done with the Semantic Scholar API based on your watch terms 
 #### Podcast Generation
 The script is generated with Gemini in a JSON format. Each "block" of script can be flanked by sound effects provided in the sound effect folder (code and prompt need to be updated to add new sound effects). Script generation doesn't do good when there are too many papers. I'd recommend limiting your papers so you around 25 at most (and even then it will sort them by interest to avoid generating too long answer). The audio is generated from the JSON format using the google cloud TTS API. Voice can be changed (see the list of [voice](https://cloud.google.com/text-to-speech/docs/voices?hl=fr)). Intro and Outro are automatically detected to overlay bgm.mp3 over the text in between those two sound effects. 
 
+#### Example Podcast
+Here's a podcast generated in May 2025 using the default parameters
+[mp3](https://gabalpha.github.io/read-audio/?p=https://github.com/Gortaf/Beholder/blob/main/example_podcast.mp3)
+
 python Beholder --help:
 ```
 usage: Beholder [-h] [-o OUTPUT] [-i INTERESTS [INTERESTS ...]] [-d DAYS_BACK] [-c SEARCH_CHUNK] [-m MODEL]
