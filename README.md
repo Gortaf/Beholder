@@ -23,11 +23,11 @@ from tqdm import tqdm
 
 The following needs to be done for installation (outside of installing python packages):
 - make a .env file containing a value for G_API_KEY. The value should be a Google Cloud API key that's autorised for the following APIs: Generative Language API, Cloud Text-to-Speech API
-- install [FFPMEG](https://www.ffmpeg.org/download.html) if not already done
+- install [FFmpeg](https://www.ffmpeg.org/download.html) if not already done
 
 You can customize your paper search & podcast by doing the following:
 - Change watch_terms.txt to your search terms (more search terms = more papers)
-- Change script_prompt.txt to your liking. I recommend not editing it too drastically, but you can have fun with it. The {DAYS_BACK} and {INTERESTS} tags will be automatically replaced when running the program. You can place them wherever you want.
+- Change script_prompt.txt to your liking. I recommend not editing it too drastically, but you can have fun with it. The {DAYS_BACK} and {INTERESTS} tags will be automatically replaced when running the program. You can place them wherever you want. Note that the {INTERESTS} are very important to force the script generation to focus on what actually interests you. If none are specified with the --interests option, it will use whatever your search terms are as your of area interests (which can work really fine if your search terms aren't too broad).
 
 
 #### Paper Searching
@@ -37,7 +37,7 @@ Paper searching is done with the Semantic Scholar API based on your watch terms 
 - if all else fails, attempt to retrieve the paper abstract and add that as a txt file
 
 #### Podcast Generation
-The script is generated with Gemini in a JSON format. Each "block" of script can be flanked by sound effects provided in the sound effect folder (code and prompt need to be updated to add new sound effects). Script generation doesn't do good when there are too many papers. I'd recommend limiting your papers so you around 25 at most (and even then it will sort them by interest to avoid generating too long answer). The audio is generated from the JSON format using the google cloud TTS API. Voice can be changed (see the list of [voice](https://cloud.google.com/text-to-speech/docs/voices?hl=fr)). Intro and Outro are automatically detected to overlay bgm.mp3 over the text in between those two sound effects. 
+The script is generated with Gemini in a JSON format. Each "block" of script can be flanked by sound effects provided in the sound effect folder (code and prompt need to be updated to add new sound effects). Script generation doesn't do good when there are too many papers. I'd recommend limiting your papers so you have around 25 at most (and even then it will sort them by interest to avoid generating too long answer). The audio is generated from the JSON format using the google cloud TTS API. Voice can be changed (see the list of [voice](https://cloud.google.com/text-to-speech/docs/voices?hl=fr)). Intro and Outro are automatically detected to overlay bgm.mp3 over the text in between those two sound effects. 
 
 #### Example Podcast
 Here's a podcast generated in May 2025 using the default parameters
