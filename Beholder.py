@@ -228,8 +228,8 @@ def script_from_papers(gkey, folder, prompt, model="gemini-1.5-pro", max_tokens=
             tqdm.write(f"Unsupported file:\n{file}\nSkipping...\n")
     
     content = []
-    if len(pdfs) != 0: content.append[pdfs]
-    if len(abstracts) != 0: content.append[abstracts]
+    if len(pdfs) != 0: content.append(pdfs)
+    if len(abstracts) != 0: content.append(abstracts)
     # tqdm.write([*pdfs, *abstracts, prompt])
     response = client.models.generate_content(
         model=model,
