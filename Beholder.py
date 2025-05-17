@@ -223,7 +223,7 @@ def script_from_papers(gkey, folder, prompt, model="gemini-1.5-pro", max_tokens=
              ))
         elif os.path.splitext(file)[-1] == ".txt":
             name = os.path.splitext(file)[-2]
-            abstracts.append(f"{name}:\n"+open(file, "r").read())
+            abstracts.append(f"{name}:\n"+open(file, "r", encoding="utf8").read())
         else:
             tqdm.write(f"Unsupported file:\n{file}\nSkipping...\n")
     
