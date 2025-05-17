@@ -27,7 +27,7 @@ The following needs to be done for installation (outside of installing python pa
 
 You can customize your paper search & podcast by doing the following:
 - Change watch_terms.txt to your search terms (more search terms = more papers)
-- Change script_prompt.txt to your liking. I recommend not editing it too drastically, but you can have fun with it. The {DAYS_BACK} and {INTERESTS} tags will be automatically replaced when running the program. You can place them wherever you want. Note that the {INTERESTS} are very important to force the script generation to focus on what actually interests you. If none are specified with the --interests option, it will use whatever your search terms are as your of area interests (which can work really fine if your search terms aren't too broad).
+- Change script_prompt.txt to your liking. I recommend not editing it too drastically, but you can have fun with it. The {DAYS_BACK} and {INTERESTS} tags will be automatically replaced when running the program. You can place them wherever you want. Note that the {INTERESTS} are very important to force the script generation to focus on what actually interests you. If none are specified with the --interests option, it will use whatever your search terms are as your of area interests (which can work really fine if your search terms aren't too broad). I also wouldn't recommend changing the "output format" section of the prompt (besides names).
 
 
 #### Paper Searching
