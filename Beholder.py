@@ -79,19 +79,19 @@ parser.add_argument("-i", "--interests", help = "areas of interests for the scri
                     nargs='+', default=[])
 parser.add_argument("-d", "--days_back", 
                     help = "number of days to look back for papers. Default is 14",
-                    default=14)
+                    default=14, type=int)
 parser.add_argument("-c", "--search_chunk", 
                     help = "paper search limit for each watch term. Higher means more captured results, but can cause issues with Semantic Scholar API. Default is 75",
-                    default=75)
+                    default=75, type=int)
 parser.add_argument("-m", "--model", 
                     help = "gemini model to use. Consider API costs & context windows before changing from default. Default is gemini-1.5-pro",
                     default="gemini-1.5-pro")
 parser.add_argument("-t", "--temperature", 
                     help = "script generation temperature (higher means more spicy outcomes). Default is 0.7",
-                    default=0.7)
+                    default=0.7, type=float)
 parser.add_argument("-s", "--max_tokens", 
                     help = "maximum token length of generated script (higher means potentially longer scripts, but higher google API cost). Default is 300000",
-                    default=300000)
+                    default=300000, type=int)
 parser.add_argument("-l", "--language", 
                     help = "language of TTS model to use. Need to match the chosen --voice. Default is en-US",
                     default="en-US")
