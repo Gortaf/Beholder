@@ -26,7 +26,8 @@ from tqdm import tqdm
 # Semantic Scholar search constants
 API_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
 API_FIELDS = "title,authors,url,year,publicationDate,externalIds,abstract,isOpenAccess,openAccessPdf"
-API_STUDY_FIELDS="Computer Science"
+# API_STUDY_FIELDS="Computer Science"
+# API_STUDY_FIELDS="Psychology"
 
 # Sound effect mp3s
 SOUND_EFFECTS = [
@@ -98,8 +99,12 @@ parser.add_argument("-l", "--language",
 parser.add_argument("-v", "--voice", 
                     help = "voice for podcast. See for a list of available voices (consider API costs per voice engine before making drastic changes). Default is en-US-Chirp3-HD-Algieba",
                     default="en-US-Chirp3-HD-Algieba")
-parser.add_argument("-f", "--from_papers", 
+parser.add_argument("-f", "--fields_of_study", 
+                    help = "fields of study to search in Semantic Scholar. Check API for available fields of study (API paramater fieldsOfStudy). Default is Computer Science",
+                    nargs='+', default=["Computer Science"])
+parser.add_argument("-p", "--from_papers", 
                     help = "skips paper retrievals, send the given folder of papers to podcast generation")
+
 
 # Flags
 parser.add_argument("--save_script",
@@ -112,7 +117,7 @@ parser.add_argument("--no_audio",
                     help = "the script will stop after generating the podcast script json. Couple with --save_script to save the script json",
                     action='store_true')
 
-def search_papers(query, days_back=14, limit=75):
+def search_papers(query, fields, days_back=14, limit=75):
     end_date = datetime.now()
     start_date = end_date - timedelta(days=days_back)
     date_range = f"{start_date.date()}:{end_date.date()}"
@@ -121,7 +126,7 @@ def search_papers(query, days_back=14, limit=75):
         'query': query,
         'limit': limit,
         'fields': API_FIELDS,
-        'fieldsOfStudy': API_STUDY_FIELDS,
+        'fieldsOfStudy': fields,
         'offset': 0,
         'year': start_date.year,  # Restrict by year, we'll filter by date on results
 
@@ -183,10 +188,10 @@ def get_pdf(url, path):
                 os.remove(path+".pdf")
     return False
 
-def batch_get_pdf(watch_terms, folder, days_back=14, limit=75):
+def batch_get_pdf(watch_terms, folder, fields, days_back=14, limit=75):
     total_papers = 0
     for term in tqdm(watch_terms):
-        papers = search_papers(term, days_back=days_back, limit=limit)
+        papers = search_papers(term, fields, days_back=days_back, limit=limit)
         total_papers += len(papers)
         # tqdm.write(papers)
         for paper in papers:
@@ -336,7 +341,7 @@ if __name__ == "__main__":
     tqdm.write("search terms:\n" + '\n'.join(watch_terms))
     
     if args.from_papers == None:
-        total_papers = batch_get_pdf(watch_terms, folder, args.days_back, args.search_chunk)
+        total_papers = batch_get_pdf(watch_terms, ",".join(args.fields_of_study), folder, args.days_back, args.search_chunk)
         tqdm.write(f"generating script for {total_papers} papers")
     else:
         tqdm.write(f"skipping paper retrieval, using {args.from_papers} as paper folder. Generating podcast.")
