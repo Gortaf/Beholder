@@ -102,7 +102,15 @@ parser.add_argument("-v", "--voice",
 parser.add_argument("-f", "--fields_of_study", 
                     help = "fields of study to search in Semantic Scholar. Check API for available fields of study (API paramater fieldsOfStudy). Default is Computer Science",
                     nargs='+', default=["Computer Science"])
-parser.add_argument("-p", "--from_papers", 
+parser.add_argument("-w", "--watch_terms", 
+                    help = "sets watch_terms.txt path. Defaults to watch_terms.txt",
+                    default="watch_terms.txt")
+parser.add_argument("-p", "--script_prompt", 
+                    help = "sets script_prompt.txt path. Defaults to script_prompt.txt",
+                    default="script_prompt.txt")
+
+# No shortcut value args
+parser.add_argument("--from_papers", 
                     help = "skips paper retrievals, send the given folder of papers to podcast generation")
 
 
@@ -160,32 +168,48 @@ def search_papers(query, fields, days_back=14, limit=75):
                     recent_papers.append({
                         'title': sanitize_filename(paper['title']),
                         'pdf_url': paper['openAccessPdf']['url'],
+                        'DOI': paper["externalIds"]['DOI'],
                         'abstract': paper["abstract"]
                     })
                     
-                # PDF not availabel but DOI still provided. Falling back to abstract
+                # PDF not available but DOI still provided.
                 elif "DOI" in paper["externalIds"].keys() and paper["externalIds"]["DOI"]:
                     recent_papers.append({
                         'title': sanitize_filename(paper['title']),
                         'pdf_url': None,  # PDF not directly available
+                        'DOI': paper["externalIds"]['DOI'],
                         'abstract': paper["abstract"]
                     })
     return recent_papers
 
-def get_pdf(url, path):
+def get_pdf(url, doi, path):
+    
+    # Tries retrieving the pdf the "polite" way
     if ".pdf" in url:
         response = requests.get(url)
         with open(path+".pdf", 'wb') as f:
             f.write(response.content)
             return True
-    else:
-        try:
-            pdfkit.from_url(url, path+".pdf")
-            return True
-        except:
-            tqdm.write(f"pdfkit failed for paper: {path}... deleting file...")
-            if os.path.exists(path+".pdf"):
-                os.remove(path+".pdf")
+    
+    # If the polite way fails because the provided link isn't a pdf, try turning the page from the link into a pdf
+    try:
+        pdfkit.from_url(url, path+".pdf")
+        return True
+    except:
+        tqdm.write(f"pdfkit failed using provided pdf link for paper: {path}... deleting file...")
+        if os.path.exists(path+".pdf"):
+            os.remove(path+".pdf")
+
+    # If the provided link won't be turned into a pdf, uses doi to retrieve paper page and turn it into pdf
+    try:
+        pdfkit.from_url(f"https://doi.org/{doi}", path+".pdf")
+        return True
+    except:
+        tqdm.write(f"pdfkit failed using doi link for paper: {path}... deleting file...")
+        if os.path.exists(path+".pdf"):
+            os.remove(path+".pdf")
+    
+    # If all else fails, returns False so that we at least try to retrieve the abstract
     return False
 
 def batch_get_pdf(watch_terms, folder, fields, days_back=14, limit=75):
@@ -195,12 +219,13 @@ def batch_get_pdf(watch_terms, folder, fields, days_back=14, limit=75):
         total_papers += len(papers)
         # tqdm.write(papers)
         for paper in papers:
+            success = False
             if "Abstract" in paper["title"]: continue   # Skips sketch unreviewed pretqdm.writes
             
             # Main pathway for recovering pdf
-            if paper['pdf_url'] != None:
+            if paper['pdf_url'] != None or paper['DOI'] != None:
                 tqdm.write(f"getting pdf for: {paper['title']}")
-                success = get_pdf(paper['pdf_url'], f"{folder}/{paper['title']}")
+                success = get_pdf(paper['pdf_url'], paper['DOI'], f"{folder}/{paper['title']}")
             
             # No pdf available or recovery failed -> use abstract
             if (paper['pdf_url'] == None or not success) and paper["abstract"] != None:
@@ -326,7 +351,7 @@ if __name__ == "__main__":
         
     args = parser.parse_args()
     
-    watch_terms = [l.strip() for l in open("watch_terms.txt", "r").readlines()]
+    watch_terms = [l.strip() for l in open(args.watch_terms, "r").readlines()]
     if len(args.interests) == 0:
         args.interests = watch_terms
     
@@ -348,7 +373,7 @@ if __name__ == "__main__":
         tqdm.write(f"skipping paper retrieval, using {args.from_papers} as paper folder. Generating podcast.")
     args.no_podcast and sys.exit(0)
     
-    prompt = open("script_prompt.txt", "r", encoding="utf8").read()
+    prompt = open(args.script_prompt, "r", encoding="utf8").read()
     prompt = prompt.replace("{DAYS_BACK}", str(args.days_back))
     prompt = prompt.replace("{INTERESTS}", "\n-" + "\n-".join(args.interests))
     podcast_script = script_from_papers(gkey, folder, prompt, args.model, args.max_tokens, args.temperature)
