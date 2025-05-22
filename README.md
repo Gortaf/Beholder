@@ -1,12 +1,12 @@
 ## Bot for Extracting & Highlighting Outstanding Literature, Evaluations & Reviews (BEHOLDER).
 A python script to automatically retrieve Computer Science papers with predetermined watch terms using Semantic Scholar API, then generating an AI podcast using google cloud API.
-This python package requires the following packages to be importable (yes I should have exported a conda env, maybe later :p):
+**This python package requires the following packages to be importable** (yes I should have exported a conda env, maybe later :p)
 ```
 import os
 import sys
 import io
 import requests
-import pdfkit
+import pdfkit   # Can be very capricious depending on your operating system. Check if it works correctly!
 import time
 import enum
 import json
@@ -28,26 +28,31 @@ The following needs to be done for installation (outside of installing python pa
 You can customize your paper search & podcast by doing the following:
 - Change watch_terms.txt to your search terms (more search terms = more papers)
 - Change script_prompt.txt to your liking. I recommend not editing it too drastically, but you can have fun with it. The {DAYS_BACK} and {INTERESTS} tags will be automatically replaced when running the program. You can place them wherever you want. Note that the {INTERESTS} are very important to force the script generation to focus on what actually interests you. If none are specified with the --interests option, it will use whatever your search terms are as your of area interests (which can work really fine if your search terms aren't too broad). I also wouldn't recommend changing the "output format" section of the prompt (besides names).
+Note that you can also point to different watch_terms.txt and script_prompt.txt files using the --watch_terms & --script_prompt arguments.
 
 
 #### Paper Searching
-Paper searching is done with the Semantic Scholar API based on your watch terms in watch_terms.txt. It is hard coded to be constrained to Computer Science papers (I'll allow it to be changed soon). Papers are retrieved within the last X days (see --days_back) per watch term. For each paper, the following is done:
+Paper searching is done with the Semantic Scholar API based on your watch terms in watch_terms.txt. Papers are retrieved within the last X days (see --days_back) per watch term. For each paper, the following is done:
 - if the paper is flagged as having an available pdf, attempt to retrieve the full pdf
-- if pdf retrieval fails, attempt to convert the webpage linked to the paper's DOI into a pdf
+- if pdf retrieval fails, but the paper is still marked as pdf available, try to turn the webpage link into a pdf
+- if that also fails, attempt to convert the webpage linked to the paper's DOI into a pdf.
+(*note: this may sometimes catch a webpage with just an abstract and turn it into a pdf)
 - if all else fails, attempt to retrieve the paper abstract and add that as a txt file
+Note that the default field of study is Computer Science to restrict the paper search, but this can be changed.
 
 #### Podcast Generation
-The script is generated with Gemini in a JSON format. Each "block" of script can be flanked by sound effects provided in the sound effect folder (code and prompt need to be updated to add new sound effects). Script generation doesn't do good when there are too many papers. I'd recommend limiting your papers so you have around 25 at most (and even then it will sort them by interest to avoid generating too long answer). The audio is generated from the JSON format using the google cloud TTS API. Voice can be changed (see the list of [voice](https://cloud.google.com/text-to-speech/docs/voices?hl=fr)). Intro and Outro are automatically detected to overlay bgm.mp3 over the text in between those two sound effects. 
+The script is generated with Gemini in a JSON format. Each "block" of script can be flanked by sound effects provided in the sound effect folder (code and prompt need to be updated to add new sound effects). Script generation doesn't do good when there are too many papers. I'd recommend limiting your papers so you have around 25 at most (and even then it will sort them by interest to avoid generating too long answer). The script JSON can be saved with the --save_script flag.
+
+The audio is generated from the JSON format using the google cloud TTS API. The voice of the podcast can be changed (see the list of [voice](https://cloud.google.com/text-to-speech/docs/voices?hl=fr)). When changing the voice (--voice), make sure you also change the language the generation is set to (--language). Intro and Outro are automatically detected to overlay the bgm.mp3 over the text in between those two sound effects (see sound_effects folder). Passing the --no_podcast flag will skip these steps entierly. If you're only interested in paper retrieval and no podcast generation, you can pass this flag (and in the .env file set G_API_KEY to whatever value, it should ignore it but the variable has to exist).
 
 #### Example Podcast
-Here's a podcast generated in May 2025 using the default parameters
+Here's a podcast generated in May 2025 using the default parameters at the time
 [mp3](https://drive.google.com/file/d/1S17f52nqJMUGILWfaUJHt5SNwHSMNJdQ/view?usp=sharing)
 
 python Beholder --help:
 ```
-usage: Beholder [-h] [-o OUTPUT] [-i INTERESTS [INTERESTS ...]] [-d DAYS_BACK] [-c SEARCH_CHUNK] [-m MODEL]
-                [-t TEMPERATURE] [-s MAX_TOKENS] [-l LANGUAGE] [-v VOICE] [-f FROM_PAPERS] [--save_script]
-                [--no_podcast] [--no_audio]
+usage: Beholder [-h] [-o OUTPUT] [-i INTERESTS [INTERESTS ...]] [-d DAYS_BACK] [-c SEARCH_CHUNK] [-m MODEL] [-t TEMPERATURE] [-s MAX_TOKENS] [-l LANGUAGE] [-v VOICE] [-f FIELDS_OF_STUDY [FIELDS_OF_STUDY ...]]
+                [-w WATCH_TERMS] [-p SCRIPT_PROMPT] [--from_papers FROM_PAPERS] [--save_script] [--no_podcast] [--no_audio]
 
 Bot for Extracting & Highlighting Outstanding Literature, Evaluations & Reviews (BEHOLDER).
 
@@ -74,7 +79,13 @@ options:
   -l, --language LANGUAGE
                         language of TTS model to use. Need to match the chosen --voice. Default is en-US
   -v, --voice VOICE     voice for podcast. See for a list of available voices (consider API costs per voice engine before making drastic changes). Default is en-US-Chirp3-HD-Algieba
-  -f, --from_papers FROM_PAPERS
+  -f, --fields_of_study FIELDS_OF_STUDY [FIELDS_OF_STUDY ...]
+                        fields of study to search in Semantic Scholar. Check API for available fields of study (API paramater fieldsOfStudy). Default is Computer Science
+  -w, --watch_terms WATCH_TERMS
+                        sets watch_terms.txt path. Defaults to watch_terms.txt
+  -p, --script_prompt SCRIPT_PROMPT
+                        sets script_prompt.txt path. Defaults to script_prompt.txt
+  --from_papers FROM_PAPERS
                         skips paper retrievals, send the given folder of papers to podcast generation
   --save_script         the podcast script's JSON will be saved in the output directory
   --no_podcast          the script will stop after retrieving the papers and will not attempt to generate an audio podcast

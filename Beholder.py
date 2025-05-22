@@ -97,7 +97,7 @@ parser.add_argument("-l", "--language",
                     help = "language of TTS model to use. Need to match the chosen --voice. Default is en-US",
                     default="en-US")
 parser.add_argument("-v", "--voice", 
-                    help = "voice for podcast. See for a list of available voices (consider API costs per voice engine before making drastic changes). Default is en-US-Chirp3-HD-Algieba",
+                    help = "voice for podcast. See README for a list of available voices (consider API costs per voice engine before making drastic changes). Default is en-US-Chirp3-HD-Algieba",
                     default="en-US-Chirp3-HD-Algieba")
 parser.add_argument("-f", "--fields_of_study", 
                     help = "fields of study to search in Semantic Scholar. Check API for available fields of study (API paramater fieldsOfStudy). Default is Computer Science",

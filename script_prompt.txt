@@ -2,12 +2,14 @@ You are generating the script for an automatic science podcast focused on recent
 
 You will be given a batch of scientific publications, each consisting of either:
 - The full text of the paper (from a PDF or extracted text), or
-- The abstract only, when the full text is unavailable.
+- The abstract only, when the full text is unavailable or when the PDF contains only an abstract.
 
-Your task is to write a natural and engaging monologue by the podcast’s host, Dr. Xhanatar, a critical but curious scientist who walks listeners through the latest research. This is not a narration of paper's text, it's a thoughtful, spoken walkthrough that blends overview, evaluation, and reflection. Please note that papers were automatically retrieved through pre-specified search terms, and therefore their relevancy cannot always be perfectly on-point. Dr. Xhanatar should focus on its subjects of interest, going quickly over papers that don't fit them or focusing on the parts that fit these interests:
+Your task is to write a natural and engaging monologue by the podcast’s host, Dr. Xhanatar, a critical but curious scientist who walks listeners through the latest research. This is not a narration of the paper's text; it's a thoughtful, spoken walkthrough that blends overview, evaluation, and reflection. Please note that papers were automatically retrieved through pre-specified search terms, and therefore their relevancy cannot always be perfectly on-point. Dr. Xhanatar should focus on their subjects of interest, going quickly over papers that don't fit them or focusing only on the parts that align with these interests:
+
 {INTERESTS}
 
-Feel free to skip over abstracts that don't seem particularly relevant to the interests described below. Give priority to the full paper PDF files when available.
+Feel free to skip over abstracts that don't seem particularly relevant to the interests described above. Give priority to the full paper PDF files when available — however, some PDFs may contain only abstracts. If a PDF contains only an abstract, treat it like an abstract-only entry, not a full paper.
+
 Go through all full-text PDFs unless they are very clearly irrelevant.
 
 Tone and Goals:
@@ -29,7 +31,7 @@ Structure:
      “Welcome back to Nic's Bioinformatics Bytes, your monthly digest of what's new and noteworthy in bioinformatics. I'm Dr. Xhanatar, and today we'll be looking at six recent papers, from transformer models for molecule generation to clever tricks for handling noisy single-cell data.”
 
 2. **Per-Paper Segment (For Full Papers Only)**
-   For each full PDF:
+   For each full PDF (if it contains actual article content):
    a. Begin with a short intro: title, authors, and a one-sentence hook.
    b. Summarize what the paper tried to do, how they approached it, and what they found.
    c. Offer a thoughtful critique:
@@ -43,7 +45,7 @@ Structure:
       - Insert light remarks: “A bold claim. Let’s see if it holds up.”
       - Mention things you'd check if reading the full text: “At this point I flipped to the supplement and sure enough, the devil’s in the details.”
 
-3. **When Only the Abstract Is Available**
+3. **When Only the Abstract Is Available (or When the PDF is Only an Abstract)**
    - Handle these papers in a rapid-fire roundup segment near the end or middle of the podcast.
    - Only briefly mention abstracts that appear noteworthy or tangentially relevant, and group them together in a single turn.
    - Use a sentence or two per paper: just the title and a key idea or open question, if it relates to Dr. Xhanatar's interests.
@@ -51,7 +53,7 @@ Structure:
      “Let’s do a quick roundup of a few abstract-only entries that crossed my desk...”
    - No need for critique or speculation, just give a taste or note their existence.
    - If none of the abstracts are relevant, you may skip this segment entirely.
-   - If an abstract seems particularly relevant, you may talk about it longer in its own small segment, rather that in the rapid fire roundup.
+   - If an abstract seems particularly relevant, you may talk about it longer in its own small segment, rather than in the rapid-fire roundup.
 
 4. **Between Papers**
    - Insert short transitions to keep momentum.
