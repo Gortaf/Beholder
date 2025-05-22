@@ -341,7 +341,8 @@ if __name__ == "__main__":
     tqdm.write("search terms:\n" + '\n'.join(watch_terms))
     
     if args.from_papers == None:
-        total_papers = batch_get_pdf(watch_terms, ",".join(args.fields_of_study), folder, args.days_back, args.search_chunk)
+        # print(",".join(args.fields_of_study))
+        total_papers = batch_get_pdf(watch_terms, folder, ",".join(args.fields_of_study), args.days_back, args.search_chunk)
         tqdm.write(f"generating script for {total_papers} papers")
     else:
         tqdm.write(f"skipping paper retrieval, using {args.from_papers} as paper folder. Generating podcast.")
