@@ -371,6 +371,8 @@ if __name__ == "__main__":
         tqdm.write(f"generating script for {total_papers} papers")
     else:
         tqdm.write(f"skipping paper retrieval, using {args.from_papers} as paper folder. Generating podcast.")
+        folder = args.from_papers
+
     args.no_podcast and sys.exit(0)
     
     prompt = open(args.script_prompt, "r", encoding="utf8").read()
