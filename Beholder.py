@@ -201,14 +201,14 @@ def get_pdf(url, doi, path):
         if os.path.exists(path+".pdf"):
             os.remove(path+".pdf")
 
-    # If the provided link won't be turned into a pdf, uses doi to retrieve paper page and turn it into pdf
-    try:
-        pdfkit.from_url(f"https://doi.org/{doi}", path+".pdf")
-        return True
-    except:
-        tqdm.write(f"pdfkit failed using doi link for paper: {path}... deleting file...")
-        if os.path.exists(path+".pdf"):
-            os.remove(path+".pdf")
+    # # If the provided link won't be turned into a pdf, uses doi to retrieve paper page and turn it into pdf
+    # try:
+    #     pdfkit.from_url(f"https://doi.org/{doi}", path+".pdf")
+    #     return True
+    # except:
+    #     tqdm.write(f"pdfkit failed using doi link for paper: {path}... deleting file...")
+    #     if os.path.exists(path+".pdf"):
+    #         os.remove(path+".pdf")
     
     # If all else fails, returns False so that we at least try to retrieve the abstract
     return False
