@@ -165,12 +165,13 @@ def search_papers(query, fields, days_back=14, limit=75):
 
                 # PDF is marked as available
                 if paper.get('openAccessPdf'):
+                    doi = paper.get("externalIds", {}).get("DOI")
                     recent_papers.append({
-                        'title': sanitize_filename(paper['title']),
-                        'pdf_url': paper['openAccessPdf']['url'],
-                        'DOI': paper["externalIds"]['DOI'],
-                        'abstract': paper["abstract"]
-                    })
+                    'title': sanitize_filename(paper['title']),
+                    'pdf_url': paper['openAccessPdf']['url'],
+                    'DOI': doi,
+                    'abstract': paper["abstract"]
+                })
                     
                 # PDF not available but DOI still provided.
                 elif "DOI" in paper["externalIds"].keys() and paper["externalIds"]["DOI"]:
