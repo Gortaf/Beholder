@@ -1,4 +1,4 @@
-## Bot for Extracting & Highlighting Outstanding Literature, Evaluations & Reviews (BEHOLDER).
+## Bot for Extracting & Highlighting Outstanding Literature, Documentation, Evaluations & Reviews (BEHOLDER).
 A python script to automatically retrieve Computer Science papers with predetermined watch terms using Semantic Scholar API, then generating an AI podcast using google cloud API.
 **This python package requires the following packages to be importable** (yes I should have exported a conda env, maybe later :p)
 ```
